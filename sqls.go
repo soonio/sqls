@@ -7,7 +7,7 @@ import (
 
 // 结构体转换为数据
 // 这里不转换为map而转换为切片，避免每次顺序不一样
-func struct2data(s any, ignore ...string) ([]string, []any) {
+func s2d(s any, ignore ...string) ([]string, []any) {
 	var keys []string
 	var vals []any
 
@@ -41,7 +41,7 @@ func Select(table string, s any, applies ...Apply) string {
 	var sb strings.Builder
 
 	var am = newApplyMap(applies...)
-	ks, _ := struct2data(s, am.ignore()...)
+	ks, _ := s2d(s, am.ignore()...)
 
 	sb.WriteString("select ")
 	sb.WriteString("`")
@@ -67,7 +67,7 @@ func Update(table string, s any, applies ...Apply) (string, []any) {
 	var sb strings.Builder
 
 	var am = newApplyMap(applies...)
-	ks, vs := struct2data(s, am.ignore()...)
+	ks, vs := s2d(s, am.ignore()...)
 
 	sb.WriteString("update `")
 	sb.WriteString(table)
@@ -95,7 +95,7 @@ func Insert(table string, s any, applies ...Apply) (string, []any) {
 	var sb strings.Builder
 
 	var am = newApplyMap(applies...)
-	ks, vs := struct2data(s, am.ignore()...)
+	ks, vs := s2d(s, am.ignore()...)
 
 	sb.WriteString("insert into `")
 	sb.WriteString(table)
