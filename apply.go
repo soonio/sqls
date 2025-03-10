@@ -18,6 +18,12 @@ func ApplyWhere(condition ...string) Apply {
 	}
 }
 
+func ApplySuffix(suffix ...string) Apply {
+	return func() (string, []string) {
+		return "suffix", suffix
+	}
+}
+
 type applyMap map[string][]string
 
 func newApplyMap(applies ...Apply) applyMap {
@@ -47,4 +53,12 @@ func (m applyMap) ignore() []string {
 		return ignore
 	}
 	return nil
+}
+
+func (m applyMap) suffix(sb *strings.Builder) {
+	if suffix, ok := m[`suffix`]; ok {
+		for _, s := range suffix {
+			sb.WriteString(s)
+		}
+	}
 }
