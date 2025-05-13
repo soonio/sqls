@@ -4,7 +4,7 @@ import "strings"
 
 type Apply func() (string, []string)
 
-// ApplyIgnore 配置忽律某些字段
+// ApplyIgnore 配置忽略某些字段
 func ApplyIgnore(column ...string) Apply {
 	return func() (string, []string) {
 		return "ignore", column

@@ -13,6 +13,15 @@ func s2d(s any, ignore ...string) ([]string, []any) {
 
 	var t = reflect.TypeOf(s)
 	var v = reflect.ValueOf(s)
+
+	if t.Kind() == reflect.Map {
+		for _, key := range v.MapKeys() {
+			keys = append(keys, key.String())
+			vals = append(vals, v.MapIndex(key).Interface())
+		}
+		return keys, vals
+	}
+
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 		v = v.Elem()
