@@ -1,64 +1,27 @@
 package sqls
 
-import "strings"
-
-type Apply func() (string, []string)
-
-// ApplyIgnore 配置忽略某些字段
-func ApplyIgnore(column ...string) Apply {
-	return func() (string, []string) {
-		return "ignore", column
-	}
+type Opt struct {
+	ignore []string
+	only   []string
+	where  []string
+	suffix []string
 }
 
-// ApplyWhere 配置使用where条件
-func ApplyWhere(condition ...string) Apply {
-	return func() (string, []string) {
-		return "where", condition
-	}
+func (o *Opt) Ignore(column ...string) *Opt {
+	o.ignore = append(o.ignore, column...)
+	return o
 }
 
-func ApplySuffix(suffix ...string) Apply {
-	return func() (string, []string) {
-		return "suffix", suffix
-	}
+func (o *Opt) Only(column ...string) *Opt {
+	o.only = append(o.only, column...)
+	return o
+}
+func (o *Opt) Where(condition ...string) *Opt {
+	o.where = append(o.where, condition...)
+	return o
 }
 
-type applyMap map[string][]string
-
-func newApplyMap(applies ...Apply) applyMap {
-	var am = make(applyMap)
-	for _, apply := range applies {
-		k, v := apply()
-		am[k] = v
-	}
-	return am
-}
-
-func (m applyMap) where(sb *strings.Builder) {
-	if where, ok := m[`where`]; ok {
-		if len(where) > 0 {
-			sb.WriteString(" where ")
-			sb.WriteString(where[0])
-			for _, c := range where[1:] {
-				sb.WriteString(" and ")
-				sb.WriteString(c)
-			}
-		}
-	}
-}
-
-func (m applyMap) ignore() []string {
-	if ignore, ok := m[`ignore`]; ok {
-		return ignore
-	}
-	return nil
-}
-
-func (m applyMap) suffix(sb *strings.Builder) {
-	if suffix, ok := m[`suffix`]; ok {
-		for _, s := range suffix {
-			sb.WriteString(s)
-		}
-	}
+func (o *Opt) Suffix(suffix ...string) *Opt {
+	o.suffix = append(o.suffix, suffix...)
+	return o
 }
